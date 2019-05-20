@@ -37,3 +37,4 @@ select * from twits;
 select * from message_extracted;
 select * from message_filtered;
 select * from sentiment_data;
+
