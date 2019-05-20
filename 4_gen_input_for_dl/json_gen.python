@@ -1,0 +1,8 @@
+import org.apache.spark._
+import org.apache.spark.sql.hive._
+val hc = new HiveContext(sc)
+
+val select="select * from sentiment_data"
+val sqlResult = hc.sql(select)
+
+sqlResult.foreach(row=>println(row))
