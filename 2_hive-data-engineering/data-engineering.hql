@@ -18,7 +18,7 @@ LOCATION '/tmp/twits';
 
 create table message_extracted (symbols array<struct<symbol:string>>, sentiment STRING, body STRING) STORED AS TEXTFILE;
 create table message_filtered (symbols array<struct<symbol:string>>, sentiment STRING, body STRING) STORED AS TEXTFILE;
-create table sentiment_data (symbol string, sentiment STRING, body STRING) STORED AS TEXTFILE;
+create table message_exploded (symbol string, sentiment STRING, body STRING) STORED AS TEXTFILE;
 
 insert overwrite table message_extracted 
 select message.symbols, message.entities.sentiment, message.body from twits 
@@ -30,11 +30,19 @@ select symbols,
     body from message_extracted 
     where body is not null;
 
-insert overwrite table sentiment_data 
+insert overwrite table message_exploded 
 select symbol.symbol, sentiment, body from message_filtered lateral view explode(symbols) symbols as symbol;
+
+
+DROP TABLE IF EXISTS sentiment_data;
+create table sentiment_data (sentiment int, body STRING) STORED AS TEXTFILE;
+
+insert overwrite table sentiment_data 
+select sentiment, body from message_filtered;
 
 select * from twits;
 select * from message_extracted;
 select * from message_filtered;
+select * from message_exploded;
 select * from sentiment_data;
 
