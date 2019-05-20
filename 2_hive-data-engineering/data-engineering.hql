@@ -22,10 +22,18 @@ create table sentiment_data (symbol string, sentiment STRING, body STRING) STORE
 
 insert overwrite table message_extracted 
 select message.symbols, message.entities.sentiment, message.body from twits 
-lateral view explode(messages) messages as message where message.entities.sentiment is not null;
+lateral view explode(messages) messages as message;
 
 insert overwrite table message_filtered 
-select symbols, sentiment, body from twits_message where sentiment is not null;
+select symbols, 
+    case sentiment when 'Bearish' then -2 when 'Bullish' then 2 ELSE 0 END as sentiment, 
+    body from message_extracted 
+    where body is not null;
 
 insert overwrite table sentiment_data 
-select symbol.symbol, sentiment, body from messages lateral view explode(symbols) symbols as symbol;
+select symbol.symbol, sentiment, body from message_filtered lateral view explode(symbols) symbols as symbol;
+
+select * from twits;
+select * from message_extracted;
+select * from message_filtered;
+select * from sentiment_data;
