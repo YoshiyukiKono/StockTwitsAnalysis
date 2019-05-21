@@ -1,3 +1,22 @@
+## for this project
+data
+
+## for CDSW environment 
+.bash_history
+.cache
+.conda
+.config
+.git
+.gitignore
+.ipython
+.local
+log4j.properties
+.oracle_jre_usage
+.pip
+.viminfo
+
+## from Github Template
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
